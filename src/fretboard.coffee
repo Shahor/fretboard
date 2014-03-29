@@ -186,7 +186,7 @@ class Vex.Flow.Fretboard
       color: "white"
       fillColor: "#666"
 
-    _.extend(opts, options)
+    extend(opts, options)
 
     L "lightUp: ", opts
     point = @getFretCenter(opts.fret, opts.string)
@@ -245,7 +245,7 @@ class Vex.Flow.FretboardDiv
     @lights = []
 
   setOption: (key, value) ->
-    if key in _.keys(@options)
+    if key in Object.keys(@options)
       L "Option: #{key}=#{value}"
       @options[key] = value
     else
