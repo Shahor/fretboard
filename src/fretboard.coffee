@@ -3,6 +3,12 @@
 # Uses PaperJS.
 # Copyright Mohit Muthanna Cheppudira 2013
 
+$ = document.querySelector.bind(document)
+extend = (origin, newobj) ->
+  for k, v of newobj
+      origin[k] = v if newobj.hasOwnProperty k
+
+
 class Vex.Flow.Fretboard
   @DEBUG = false
   L = (args...) -> console?.log("(Vex.Flow.Fretboard)", args...) if Vex.Flow.Fretboard.DEBUG
@@ -27,7 +33,7 @@ class Vex.Flow.Fretboard
       nut_color: "#aaa"
       start_fret_text: null
 
-    _.extend(@options, options)
+    extend(@options, options)
 
     @reset()
 
@@ -235,7 +241,7 @@ class Vex.Flow.FretboardDiv
       "start-text": null
       "tuning": "standard"
     throw error("Invalid selector: " + @sel) if @sel? and $(@sel).length == 0
-    @id ?= $(@sel).attr('id')
+    @id ?= $(@sel).getAttribute('id')
     @lights = []
 
   setOption: (key, value) ->
@@ -349,14 +355,16 @@ class Vex.Flow.FretboardDiv
   build: (code=null) ->
     L "Creating canvas id=#{@id} #{@options.width}x#{@options.height}"
     code ?= $(@sel).text()
+    tmp = $(@sel)
     @parse(code)
 
-    canvas = $("<canvas id=#{@id}>").
-      attr("width", @options.width).
-      attr("height", @options.height).
-      attr("id", @id).
-      width(@options.width)
-    $(@sel).replaceWith(canvas)
+    canvas = document.createElement('canvas')
+    canvas.id = @id
+    canvas.setAttribute('width', @options.width)
+    canvas.setAttribute('height', @options.height)
+    canvas.width = @options.width
+
+    tmp.parentElement.replaceChild(canvas, tmp)
 
     ps = new paper.PaperScope()
     ps.setup(document.getElementById(@id))
